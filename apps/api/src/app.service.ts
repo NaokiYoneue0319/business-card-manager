@@ -6,7 +6,6 @@ export class AppService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getHello() {
-    const users = await this.prisma.user.findMany();
-    return users;
+    return await this.prisma.user.findMany();
   }
 }
