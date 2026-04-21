@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  ADMIN
+  GENERAL
+}
+
+model User {
+  id             BigInt      @id @default(autoincrement())
+  loginId        String      @unique @map("login_id") @db.VarChar(50)
+  passwordHash   String      @map("password_hash") @db.VarChar(255)
+  userName       String      @map("user_name") @db.VarChar(100)
+  role           UserRole    @default(GENERAL)
+  isActive       Boolean     @default(true) @map("is_active")
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @updatedAt @map("updated_at")
+  deletedAt      DateTime?   @map("deleted_at")
+
+  usedCards      Card[]      @relation("UsedByUser")
+  favoriteCards  FavoriteCard[]
+
+  @@index([deletedAt], map: "idx_users_deleted_at")
+  @@map("users")
+}
+
+model Store {
+  id          BigInt    @id @default(autoincrement())
+  storeName   String    @map("store_name") @db.VarChar(100)
+  prefecture  String    @db.VarChar(20)
+  area        String    @db.VarChar(100)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  cards       Card[]
+
+  @@unique([storeName, prefecture, area], map: "uq_stores_store_name_prefecture_area")
+  @@index([storeName], map: "idx_stores_store_name")
+  @@index([deletedAt], map: "idx_stores_deleted_at")
+  @@map("stores")
+}
+
+model Card {
+  id             BigInt         @id @default(autoincrement())
+  name           String         @db.VarChar(100)
+  storeId        BigInt         @map("store_id")
+  businessDetail String?        @map("business_detail") @db.Text
+  memo           String?        @db.Text
+  usedAt         DateTime       @map("used_at")
+  usedByUserId   BigInt         @map("used_by_user_id")
+  frontImageUrl  String         @map("front_image_url") @db.VarChar(500)
+  backImageUrl   String?        @map("back_image_url") @db.VarChar(500)
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+  deletedAt      DateTime?      @map("deleted_at")
+
+  store          Store          @relation(fields: [storeId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  usedByUser     User           @relation("UsedByUser", fields: [usedByUserId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  cardTags       CardTag[]
+  favoriteCards  FavoriteCard[]
+
+  @@index([name], map: "idx_cards_name")
+  @@index([storeId], map: "idx_cards_store_id")
+  @@index([usedByUserId], map: "idx_cards_used_by_user_id")
+  @@index([usedAt], map: "idx_cards_used_at")
+  @@index([deletedAt], map: "idx_cards_deleted_at")
+  @@map("cards")
+}
+
+model Tag {
+  id         BigInt    @id @default(autoincrement())
+  tagName    String    @unique @map("tag_name") @db.VarChar(50)
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+  deletedAt  DateTime? @map("deleted_at")
+
+  cardTags   CardTag[]
+
+  @@index([deletedAt], map: "idx_tags_deleted_at")
+  @@map("tags")
+}
+
+model CardTag {
+  id         BigInt    @id @default(autoincrement())
+  cardId     BigInt    @map("card_id")
+  tagId      BigInt    @map("tag_id")
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  card       Card      @relation(fields: [cardId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  tag        Tag       @relation(fields: [tagId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@unique([cardId, tagId], map: "uq_card_tags_card_id_tag_id")
+  @@index([tagId], map: "idx_card_tags_tag_id")
+  @@map("card_tags")
+}
+
+model FavoriteCard {
+  id         BigInt    @id @default(autoincrement())
+  userId     BigInt    @map("user_id")
+  cardId     BigInt    @map("card_id")
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  card       Card      @relation(fields: [cardId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([userId, cardId], map: "uq_favorite_cards_user_id_card_id")
+  @@index([cardId], map: "idx_favorite_cards_card_id")
+  @@map("favorite_cards")
+}

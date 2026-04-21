@@ -1,0 +1,7 @@
+node_modules
+.pnpm-storedist
+.nextcoverage
+.env
+.env.*
+generated
+apps/api/uploads
