@@ -60,10 +60,14 @@ export class CardsService {
         }),
 
         ...(usedByUserName && {
-          usedByUser: {
-            userName: {
-              contains: usedByUserName,
-              mode: 'insensitive',
+          cardUsers: {
+            some: {
+              user: {
+                userName: {
+                  contains: usedByUserName,
+                  mode: 'insensitive',
+                },
+              },
             },
           },
         }),
@@ -88,7 +92,11 @@ export class CardsService {
       },
       include: {
         store: true,
-        usedByUser: true,
+        cardUsers: {
+          include: {
+            user: true,
+          },
+        },
         cardTags: {
           include: {
             tag: true,
@@ -112,7 +120,11 @@ export class CardsService {
       },
       include: {
         store: true,
-        usedByUser: true,
+        cardUsers: {
+          include: {
+            user: true,
+          },
+        },
         cardTags: {
           include: {
             tag: true,
@@ -140,10 +152,10 @@ export class CardsService {
       usedYearMonth: `${card.usedAt.getFullYear()}-${String(
         card.usedAt.getMonth() + 1,
       ).padStart(2, '0')}`,
-      usedByUser: {
-        id: card.usedByUser.id.toString(),
-        userName: card.usedByUser.userName,
-      },
+      usedByUsers: card.cardUsers.map((cu) => ({
+        id: cu.user.id.toString(),
+        userName: cu.user.userName,
+      })),
       images: {
         front: card.frontImageUrl,
         back: card.backImageUrl,
@@ -162,11 +174,28 @@ export class CardsService {
       businessDetail,
       memo,
       usedAt,
-      usedByUserId,
+      usedByUserIds,
       frontImageUrl,
       backImageUrl,
       tagIds,
     } = createCardDto;
+
+    const users = await this.prisma.user.findMany({
+      where: {
+        id: {
+        in: usedByUserIds.map((id) => BigInt(id)),
+        },
+      deletedAt: null,
+      isActive: true,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (users.length !== usedByUserIds.length) {
+    throw new BadRequestException('存在しない利用者が含まれています');
+    }
 
     const card = await this.prisma.card.create({
       data: {
@@ -175,9 +204,15 @@ export class CardsService {
         businessDetail: businessDetail ?? null,
         memo: memo ?? null,
         usedAt: new Date(usedAt),
-        usedByUserId: BigInt(usedByUserId),
         frontImageUrl,
         backImageUrl: backImageUrl ?? null,
+        cardUsers: usedByUserIds?.length
+          ? {
+              create: usedByUserIds.map((userId) => ({
+                userId: BigInt(userId),
+              })),
+            }
+          : undefined,
         cardTags: tagIds?.length
           ? {
               create: tagIds.map((tagId) => ({
@@ -188,7 +223,11 @@ export class CardsService {
       },
       include: {
         store: true,
-        usedByUser: true,
+        cardUsers: {
+          include: {
+            user: true,
+          },
+        },
         cardTags: {
           include: {
             tag: true,
@@ -222,7 +261,7 @@ export class CardsService {
       businessDetail,
       memo,
       usedAt,
-      usedByUserId,
+      usedByUserIds,
       frontImageUrl,
       backImageUrl,
       tagIds,
@@ -238,9 +277,18 @@ export class CardsService {
         businessDetail: businessDetail ?? null,
         memo: memo ?? null,
         usedAt: new Date(usedAt),
-        usedByUserId: BigInt(usedByUserId),
         frontImageUrl,
         backImageUrl: backImageUrl ?? null,
+        cardUsers: {
+          deleteMany: {},
+          ...(usedByUserIds?.length
+            ? {
+                create: usedByUserIds.map((userId) => ({
+                  userId: BigInt(userId),
+                })),
+              }
+            : {}),
+        },
         cardTags: {
           deleteMany: {},
           ...(tagIds?.length
@@ -254,7 +302,11 @@ export class CardsService {
       },
       include: {
         store: true,
-        usedByUser: true,
+        cardUsers: {
+          include: {
+            user: true,
+          },
+        },
         cardTags: {
           include: {
             tag: true,
@@ -266,7 +318,7 @@ export class CardsService {
     return serializeBigInt(card);
   }
 
-    async remove(id: string) {
+  async remove(id: string) {
     if (!/^\d+$/.test(id)) {
       throw new BadRequestException('idは数値で指定してください');
     }

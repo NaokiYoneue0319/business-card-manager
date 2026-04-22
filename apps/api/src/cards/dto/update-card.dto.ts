@@ -4,7 +4,7 @@ export class UpdateCardDto {
   businessDetail?: string;
   memo?: string;
   usedAt: string;
-  usedByUserId: string;
+  usedByUserIds: string[];
   frontImageUrl: string;
   backImageUrl?: string;
   tagIds?: string[];
