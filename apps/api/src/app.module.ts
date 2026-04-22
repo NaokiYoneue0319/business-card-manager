@@ -5,6 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { CardsModule } from './cards/cards.module';
 import { StoresModule } from './stores/stores.module';
 import { TagsModule } from './tags/tags.module';
+import { UsersModule } from './users/users.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -19,6 +20,7 @@ import { AppService } from './app.service';
     CardsModule,
     StoresModule,
     TagsModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
