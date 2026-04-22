@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { serializeBigInt } from '../common/utils/serialize-bigint';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -70,31 +71,33 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto) {
-    const { loginId, password, userName, role, isActive } = createUserDto;
+  const { loginId, password, userName, role, isActive } = createUserDto;
 
-    const existingUser = await this.prisma.user.findFirst({
-      where: {
-        loginId,
-        deletedAt: null,
-      },
-    });
+  const existingUser = await this.prisma.user.findFirst({
+    where: {
+      loginId,
+      deletedAt: null,
+    },
+  });
 
-    if (existingUser) {
-      throw new BadRequestException('同じログインIDのユーザーが既に存在します');
-    }
-
-    const user = await this.prisma.user.create({
-      data: {
-        loginId,
-        passwordHash: password,
-        userName,
-        role,
-        isActive,
-      },
-    });
-
-    return serializeBigInt(user);
+  if (existingUser) {
+    throw new BadRequestException('同じログインIDのユーザーが既に存在します');
   }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const user = await this.prisma.user.create({
+    data: {
+      loginId,
+      passwordHash: hashedPassword, // ←変更
+      userName,
+      role,
+      isActive,
+    },
+  });
+
+  return serializeBigInt(user);
+}
 
   async update(id: string, updateUserDto: UpdateUserDto) {
     if (!/^\d+$/.test(id)) {

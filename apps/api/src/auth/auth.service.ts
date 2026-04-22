@@ -1,3 +1,4 @@
+import * as bcrypt from 'bcrypt';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
@@ -23,8 +24,12 @@ export class AuthService {
       throw new UnauthorizedException('ログインIDまたはパスワードが正しくありません');
     }
 
-    // 仮実装: 今は平文比較
-    if (user.passwordHash !== loginDto.password) {
+    const isMatch = await bcrypt.compare(
+      loginDto.password,
+      user.passwordHash,
+    );
+
+    if (!isMatch) {
       throw new UnauthorizedException('ログインIDまたはパスワードが正しくありません');
     }
 
