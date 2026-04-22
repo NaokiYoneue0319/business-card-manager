@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { serializeBigInt } from '../common/utils/serialize-bigint';
 import { CreateCardDto } from './dto/create-card.dto';
 import { SearchCardsDto } from './dto/search-cards.dto';
+
 
 @Injectable()
 export class CardsService {
@@ -125,6 +126,30 @@ export class CardsService {
         },
       },
     });
+
+    return serializeBigInt(card);
+  }
+
+  async findOne(id: string) {
+    const card = await this.prisma.card.findFirst({
+      where: {
+        id: BigInt(id),
+        deletedAt: null,
+      },
+      include: {
+        store: true,
+        usedByUser: true,
+        cardTags: {
+          include: {
+            tag: true,
+          },
+        },
+      },
+    });
+
+    if (!card) {
+      throw new NotFoundException('名刺が見つかりません');
+    }
 
     return serializeBigInt(card);
   }
