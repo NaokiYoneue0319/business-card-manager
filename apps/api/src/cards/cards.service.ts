@@ -89,75 +89,66 @@ export class CardsService {
   }
 
   async findOne(id: string) {
-    if (!/^\d+$/.test(id)) {
-      throw new BadRequestException('idは数値で指定してください');
-    }
-
-    const card = await this.prisma.card.findFirst({
-      where: {
-        id: BigInt(id),
-        deletedAt: null,
-      },
-      include: {
-        store: true,
-        usedByUser: true,
-        cardTags: {
-          include: {
-            tag: true,
-          },
-        },
-      },
-    });
-
-    if (!card) {
-      throw new NotFoundException('名刺が見つかりません');
-    }
-
-    return serializeBigInt(card);
+  if (!/^\d+$/.test(id)) {
+    throw new BadRequestException('idは数値で指定してください');
   }
 
-  async create(createCardDto: CreateCardDto) {
-    const {
-      name,
-      storeId,
-      businessDetail,
-      memo,
-      usedAt,
-      usedByUserId,
-      frontImageUrl,
-      backImageUrl,
-      tagIds,
-    } = createCardDto;
-
-    const card = await this.prisma.card.create({
-      data: {
-        name,
-        storeId: BigInt(storeId),
-        businessDetail: businessDetail ?? null,
-        memo: memo ?? null,
-        usedAt: new Date(usedAt),
-        usedByUserId: BigInt(usedByUserId),
-        frontImageUrl,
-        backImageUrl: backImageUrl ?? null,
-        cardTags: tagIds?.length
-          ? {
-              create: tagIds.map((tagId) => ({
-                tagId: BigInt(tagId),
-              })),
-            }
-          : undefined,
-      },
-      include: {
-        store: true,
-        usedByUser: true,
-        cardTags: {
-          include: {
-            tag: true,
-          },
+  const card = await this.prisma.card.findFirst({
+    where: {
+      id: BigInt(id),
+      deletedAt: null,
+    },
+    include: {
+      store: true,
+      usedByUser: true,
+      cardTags: {
+        include: {
+          tag: true,
         },
       },
-    });
+    },
+  });
 
-    return serializeBigInt(card);
+  if (!card) {
+    throw new NotFoundException('名刺が見つかりません');
+  }
+
+  // 🔥 ここで整形する
+  const response = {
+    id: card.id.toString(),
+    name: card.name,
+
+    store: {
+      id: card.store?.id.toString(),
+      storeName: card.store?.storeName,
+      prefecture: card.store?.prefecture,
+      area: card.store?.area,
+    },
+
+    businessDetail: card.businessDetail,
+    memo: card.memo,
+
+    usedAt: card.usedAt,
+    usedYearMonth: `${card.usedAt.getFullYear()}-${String(
+      card.usedAt.getMonth() + 1,
+    ).padStart(2, '0')}`,
+
+    usedByUser: {
+      id: card.usedByUser?.id.toString(),
+      userName: card.usedByUser?.userName,
+    },
+
+    images: {
+      front: card.frontImageUrl,
+      back: card.backImageUrl,
+    },
+
+    tags: card.cardTags.map((ct) => ({
+      id: ct.tag.id.toString(),
+      tagName: ct.tag.tagName,
+    })),
+  };
+
+  return response;
   }
 }
