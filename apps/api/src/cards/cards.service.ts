@@ -265,4 +265,32 @@ export class CardsService {
 
     return serializeBigInt(card);
   }
+
+    async remove(id: string) {
+    if (!/^\d+$/.test(id)) {
+      throw new BadRequestException('idは数値で指定してください');
+    }
+
+    const existingCard = await this.prisma.card.findFirst({
+      where: {
+        id: BigInt(id),
+        deletedAt: null,
+      },
+    });
+
+    if (!existingCard) {
+      throw new NotFoundException('名刺が見つかりません');
+    }
+
+    const card = await this.prisma.card.update({
+      where: {
+        id: BigInt(id),
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+
+    return serializeBigInt(card);
+  }
 }
