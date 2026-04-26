@@ -24,8 +24,9 @@
 .title {
   margin: 0;
   color: #111827;
-  font-size: clamp(24px, 6vw, 30px);
+  font-size: clamp(32px, 9vw, 42px); /* ←ここ上げる */
   font-weight: 800;
+  letter-spacing: 1px;
 }
 
 .subtitle {

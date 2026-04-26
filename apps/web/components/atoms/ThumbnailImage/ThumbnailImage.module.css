@@ -1,0 +1,19 @@
+.button {
+  width: 100%;
+  border: none;
+  padding: 0;
+  background: transparent;
+}
+
+.image,
+.placeholder {
+  width: 100%;
+  aspect-ratio: 1.58 / 1;
+  border-radius: 2px;
+  background: #d1d1d1;
+  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(24px, 7vw, 36px);
+}

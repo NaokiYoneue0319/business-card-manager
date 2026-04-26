@@ -1,0 +1,16 @@
+.button {
+  width: clamp(38px, 10vw, 48px);
+  height: clamp(38px, 10vw, 48px);
+  border: none;
+  background: transparent;
+  color: #111827;
+  font-size: clamp(24px, 7vw, 32px);
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.danger {
+  color: #111827;
+}

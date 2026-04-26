@@ -1,0 +1,6 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 3vw, 16px);
+  padding: 0 clamp(8px, 2.5vw, 12px) 24px;
+}

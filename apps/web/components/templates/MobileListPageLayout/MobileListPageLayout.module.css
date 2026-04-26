@@ -1,0 +1,8 @@
+.page {
+  width: 100%;
+  max-width: 430px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: clamp(18px, 4vw, 28px) clamp(12px, 3vw, 18px);
+  background: #ffffff;
+}
