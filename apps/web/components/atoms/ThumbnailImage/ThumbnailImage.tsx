@@ -8,7 +8,14 @@ type Props = {
 
 export function ThumbnailImage({ src, alt, onClick }: Props) {
   return (
-    <button type="button" className={styles.button} onClick={onClick}>
+    <button
+      type="button"
+      className={styles.button}
+      onClick={(event) => {
+        event.stopPropagation();
+        onClick?.();
+      }}
+    >
       {src ? (
         <img src={src} alt={alt} className={styles.image} />
       ) : (

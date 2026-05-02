@@ -1,6 +1,7 @@
 import { apiClient } from '@/lib/apiClient';
 import { getAccessToken } from '@/features/auth/utils/authStorage';
 import type { CardListItem, SearchCardsParams } from '../types/cardTypes';
+import type { CardDetail } from '../types/cardTypes';
 
 function buildQuery(params: SearchCardsParams) {
   const query = new URLSearchParams();
@@ -29,6 +30,15 @@ export async function deleteCard(id: string) {
 
   return apiClient(`/cards/${id}`, {
     method: 'DELETE',
+    token: token ?? undefined,
+  });
+}
+
+export async function fetchCardDetail(id: string) {
+  const token = getAccessToken();
+
+  return apiClient<CardDetail>(`/cards/${id}`, {
+    method: 'GET',
     token: token ?? undefined,
   });
 }

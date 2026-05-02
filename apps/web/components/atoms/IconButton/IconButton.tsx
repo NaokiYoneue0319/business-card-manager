@@ -12,7 +12,10 @@ export function IconButton({ label, children, onClick, danger = false }: Props) 
     <button
       type="button"
       aria-label={label}
-      onClick={onClick}
+      onClick={(event) => {
+        event.stopPropagation();
+        onClick?.();
+      }}
       className={`${styles.button} ${danger ? styles.danger : ''}`}
     >
       {children}
