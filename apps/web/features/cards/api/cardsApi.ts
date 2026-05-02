@@ -3,6 +3,7 @@ import { getAccessToken } from '@/features/auth/utils/authStorage';
 import type { CardListItem, SearchCardsParams } from '../types/cardTypes';
 import type { CardDetail } from '../types/cardTypes';
 
+
 function buildQuery(params: SearchCardsParams) {
   const query = new URLSearchParams();
 
@@ -40,5 +41,27 @@ export async function fetchCardDetail(id: string) {
   return apiClient<CardDetail>(`/cards/${id}`, {
     method: 'GET',
     token: token ?? undefined,
+  });
+}
+
+export type UpdateCardPayload = {
+  name: string;
+  storeId: string;
+  businessDetail?: string;
+  memo?: string;
+  usedAt: string;
+  usedByUserIds: string[];
+  frontImageUrl: string;
+  backImageUrl?: string | null;
+  tagIds?: string[];
+};
+
+export async function updateCard(id: string, payload: UpdateCardPayload) {
+  const token = getAccessToken();
+
+  return apiClient(`/cards/${id}`, {
+    method: 'PUT',
+    token: token ?? undefined,
+    body: JSON.stringify(payload),
   });
 }
