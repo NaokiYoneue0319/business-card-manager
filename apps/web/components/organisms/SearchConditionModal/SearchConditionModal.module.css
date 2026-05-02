@@ -51,3 +51,42 @@
   align-self: flex-end;
   margin-top: 8px;
 }
+
+.select {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #111827;
+  font-size: 16px;
+}
+
+.chipList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  border: 1px solid #60a5fa;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #2563eb;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.selectedChip {
+  background: #60a5fa;
+  color: #ffffff;
+}
+
+.buttonArea {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 8px;
+}

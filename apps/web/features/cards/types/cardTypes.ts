@@ -32,7 +32,6 @@ export type SearchCardsParams = {
   area?: string;
   usedByUserName?: string;
   tagName?: string;
-  usedYearMonth?: string;
 };
 
 export type CardDetail = {
