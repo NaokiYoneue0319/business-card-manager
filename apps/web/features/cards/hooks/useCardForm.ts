@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { fetchCardDetail, updateCard } from '../api/cardsApi';
+import { createCard, fetchCardDetail, updateCard } from '../api/cardsApi';
 import { fetchStores } from '@/features/stores/api/storesApi';
 import { fetchTags } from '@/features/tags/api/tagsApi';
 import { fetchUsers } from '@/features/users/api/usersApi';
@@ -28,7 +28,7 @@ function toDateTimeLocalValue(value: string) {
   return localDate.toISOString().slice(0, 16);
 }
 
-export function useCardForm(id: string) {
+export function useCardForm(id?: string) {
   const [values, setValues] = useState<CardFormValues>({
     name: '',
     storeId: '',
@@ -77,8 +77,7 @@ export function useCardForm(id: string) {
       setIsLoading(true);
       setErrorMessage('');
 
-      const [card, storeList, tagList, userList] = await Promise.all([
-        fetchCardDetail(id),
+      const [storeList, tagList, userList] = await Promise.all([
         fetchStores(),
         fetchTags(),
         fetchUsers(),
@@ -87,6 +86,12 @@ export function useCardForm(id: string) {
       setStores(storeList);
       setTags(tagList);
       setUsers(userList);
+
+      if (!id) {
+        return;
+      }
+
+      const card = await fetchCardDetail(id);
 
       setValues({
         name: card.name,
@@ -133,7 +138,7 @@ export function useCardForm(id: string) {
       setIsSubmitting(true);
       setErrorMessage('');
 
-      await updateCard(id, {
+      const payload = {
         name: values.name,
         storeId: values.storeId,
         businessDetail: values.businessDetail || undefined,
@@ -143,10 +148,16 @@ export function useCardForm(id: string) {
         frontImageUrl: values.frontImageUrl,
         backImageUrl: values.backImageUrl || null,
         tagIds: values.tagIds,
-      });
+      };
+
+      if (id) {
+        await updateCard(id, payload);
+      } else {
+        await createCard(payload);
+      }
     } catch (error) {
       setErrorMessage(
-        error instanceof Error ? error.message : '名刺の更新に失敗しました',
+        error instanceof Error ? error.message : '名刺の保存に失敗しました',
       );
       throw error;
     } finally {

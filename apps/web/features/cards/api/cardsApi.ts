@@ -65,3 +65,25 @@ export async function updateCard(id: string, payload: UpdateCardPayload) {
     body: JSON.stringify(payload),
   });
 }
+
+export type CreateCardPayload = {
+  name: string;
+  storeId: string;
+  businessDetail?: string;
+  memo?: string;
+  usedAt: string;
+  usedByUserIds: string[];
+  frontImageUrl: string;
+  backImageUrl?: string | null;
+  tagIds?: string[];
+};
+
+export async function createCard(payload: CreateCardPayload) {
+  const token = getAccessToken();
+
+  return apiClient('/cards', {
+    method: 'POST',
+    token: token ?? undefined,
+    body: JSON.stringify(payload),
+  });
+}
