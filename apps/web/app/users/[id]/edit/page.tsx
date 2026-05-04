@@ -1,3 +1,4 @@
+import { AuthGuard } from '@/components/organisms/AuthGuard/AuthGuard';
 import { UserEditPageView } from '@/components/pages/UserEditPageView/UserEditPageView';
 
 type Props = {
@@ -8,6 +9,7 @@ type Props = {
 
 export default async function UserEditPage({ params }: Props) {
   const { id } = await params;
-
-  return <UserEditPageView id={id} />;
+  <AuthGuard allowedRoles={['ADMIN']}>
+    return <UserEditPageView id={id} />;
+  </AuthGuard>
 }

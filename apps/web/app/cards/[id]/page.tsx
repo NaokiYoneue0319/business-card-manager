@@ -1,3 +1,4 @@
+import { AuthGuard } from '@/components/organisms/AuthGuard/AuthGuard';
 import { CardDetailPageView } from '@/components/pages/CardDetailPageView/CardDetailPageView';
 
 type Props = {
@@ -9,5 +10,9 @@ type Props = {
 export default async function CardDetailPage({ params }: Props) {
   const { id } = await params;
 
-  return <CardDetailPageView id={id} />;
+  return (
+    <AuthGuard>
+      <CardDetailPageView id={id} />
+    </AuthGuard>
+  );
 }

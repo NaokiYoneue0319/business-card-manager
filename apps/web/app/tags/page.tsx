@@ -1,5 +1,10 @@
+import { AuthGuard } from '@/components/organisms/AuthGuard/AuthGuard';
 import { TagListPageView } from '@/components/pages/TagListPageView/TagListPageView';
 
 export default function TagsPage() {
-  return <TagListPageView />;
+  return (
+    <AuthGuard>
+      <TagListPageView />
+    </AuthGuard>
+  );
 }
