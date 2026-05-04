@@ -16,3 +16,12 @@ export async function fetchStores() {
     token: token ?? undefined,
   });
 }
+
+export async function deleteStore(id: string) {
+  const token = getAccessToken();
+
+  return apiClient(`/stores/${id}`, {
+    method: 'DELETE',
+    token: token ?? undefined,
+  });
+}
