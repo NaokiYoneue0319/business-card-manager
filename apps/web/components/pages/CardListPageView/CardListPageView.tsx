@@ -7,6 +7,7 @@ import { AppHeader } from '@/components/organisms/AppHeader/AppHeader';
 import { BusinessCardList } from '@/components/organisms/BusinessCardList/BusinessCardList';
 import { DeleteConfirmModal } from '@/components/organisms/DeleteConfirmModal/DeleteConfirmModal';
 import { SearchConditionModal } from '@/components/organisms/SearchConditionModal/SearchConditionModal';
+import { SideMenu } from '@/components/organisms/SideMenu/SideMenu';
 import { MobileListPageLayout } from '@/components/templates/MobileListPageLayout/MobileListPageLayout';
 import { useCards } from '@/features/cards/hooks/useCards';
 import type { CardListItem } from '@/features/cards/types/cardTypes';
@@ -17,6 +18,7 @@ export function CardListPageView() {
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<CardListItem | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   async function handleDelete() {
     if (!deleteTarget) return;
@@ -30,6 +32,7 @@ export function CardListPageView() {
       <AppHeader
         onSearchClick={() => setIsSearchOpen(true)}
         onCreateClick={() => router.push('/cards/new')}
+        onMenuClick={() => setIsMenuOpen(true)}
       />
 
       {isLoading ? <p>読み込み中...</p> : null}
@@ -47,6 +50,11 @@ export function CardListPageView() {
         card={deleteTarget}
         onClose={() => setDeleteTarget(null)}
         onConfirm={handleDelete}
+      />
+
+      <SideMenu
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
       />
     </MobileListPageLayout>
   );

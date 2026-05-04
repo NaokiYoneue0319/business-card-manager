@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { AppHeader } from '@/components/organisms/AppHeader/AppHeader';
+import { SideMenu } from '@/components/organisms/SideMenu/SideMenu';
 import { TagList } from '@/components/organisms/TagList/TagList';
 import { TagDeleteConfirmModal } from '@/components/organisms/TagDeleteConfirmModal/TagDeleteConfirmModal';
 import { MobileListPageLayout } from '@/components/templates/MobileListPageLayout/MobileListPageLayout';
@@ -14,6 +15,8 @@ export function TagListPageView() {
   const { tags, isLoading, errorMessage, removeTag } = useTags();
 
   const [deleteTarget, setDeleteTarget] = useState<TagOption | null>(null);
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   async function handleDelete() {
     if (!deleteTarget) return;
@@ -27,6 +30,7 @@ export function TagListPageView() {
       <AppHeader
         onSearchClick={() => {}}
         onCreateClick={() => router.push('/tags/new')}
+        onMenuClick={() => setIsMenuOpen(true)}
       />
 
       {isLoading ? <p>読み込み中...</p> : null}
@@ -38,6 +42,10 @@ export function TagListPageView() {
         tag={deleteTarget}
         onClose={() => setDeleteTarget(null)}
         onConfirm={handleDelete}
+      />
+      <SideMenu
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
       />
     </MobileListPageLayout>
   );

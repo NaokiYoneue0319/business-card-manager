@@ -4,7 +4,9 @@ import { useRouter } from 'next/navigation';
 import { DetailHeader } from '@/components/organisms/DetailHeader/DetailHeader';
 import { StoreForm } from '@/components/organisms/StoreForm/StoreForm';
 import { MobileListPageLayout } from '@/components/templates/MobileListPageLayout/MobileListPageLayout';
+import { SideMenu } from '@/components/organisms/SideMenu/SideMenu';
 import { useStoreForm } from '@/features/stores/hooks/useStoreForm';
+import { useState } from 'react';
 
 export function StoreCreatePageView() {
   const router = useRouter();
@@ -18,6 +20,8 @@ export function StoreCreatePageView() {
     submit,
   } = useStoreForm();
 
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   async function handleSubmit() {
     await submit();
     router.push('/stores');
@@ -29,7 +33,11 @@ export function StoreCreatePageView() {
 
   return (
     <MobileListPageLayout>
-      <DetailHeader onEditClick={() => {}} onDeleteClick={() => {}} />
+      <DetailHeader
+        onEditClick={() => {}}
+        onDeleteClick={() => {}}
+        onMenuClick={() => setIsMenuOpen(true)}
+      />
 
       <StoreForm
         values={values}
@@ -39,6 +47,11 @@ export function StoreCreatePageView() {
         onChange={updateValue}
         onSubmit={handleSubmit}
         onCancel={() => router.push('/stores')}
+      />
+
+      <SideMenu
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
       />
     </MobileListPageLayout>
   );

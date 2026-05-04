@@ -8,6 +8,7 @@ import { CardImageSection } from '@/components/organisms/CardImageSection/CardIm
 import { CardOtherInfoSection } from '@/components/organisms/CardOtherInfoSection/CardOtherInfoSection';
 import { DeleteConfirmModal } from '@/components/organisms/DeleteConfirmModal/DeleteConfirmModal';
 import { MobileListPageLayout } from '@/components/templates/MobileListPageLayout/MobileListPageLayout';
+import { SideMenu } from '@/components/organisms/SideMenu/SideMenu';
 import { useCardDetail } from '@/features/cards/hooks/useCardDetail';
 
 type Props = {
@@ -18,6 +19,7 @@ export function CardDetailPageView({ id }: Props) {
   const router = useRouter();
   const { card, isLoading, errorMessage, removeCard } = useCardDetail(id);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   async function handleDelete() {
     await removeCard();
@@ -41,6 +43,7 @@ export function CardDetailPageView({ id }: Props) {
       <DetailHeader
         onEditClick={() => router.push(`/cards/${id}/edit`)}
         onDeleteClick={() => setIsDeleteOpen(true)}
+        onMenuClick={() => setIsMenuOpen(true)}
       />
 
       <CardBasicInfoSection card={card} />
@@ -62,7 +65,11 @@ export function CardDetailPageView({ id }: Props) {
         }
         onClose={() => setIsDeleteOpen(false)}
         onConfirm={handleDelete}
-    />
+      />
+      <SideMenu
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+      />
     </MobileListPageLayout>
   );
 }

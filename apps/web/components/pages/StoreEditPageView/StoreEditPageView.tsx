@@ -4,7 +4,9 @@ import { useRouter } from 'next/navigation';
 import { DetailHeader } from '@/components/organisms/DetailHeader/DetailHeader';
 import { StoreForm } from '@/components/organisms/StoreForm/StoreForm';
 import { MobileListPageLayout } from '@/components/templates/MobileListPageLayout/MobileListPageLayout';
+import { SideMenu } from '@/components/organisms/SideMenu/SideMenu';
 import { useStoreForm } from '@/features/stores/hooks/useStoreForm';
+import { useState } from 'react';
 
 type Props = {
   id: string;
@@ -22,6 +24,8 @@ export function StoreEditPageView({ id }: Props) {
     submit,
   } = useStoreForm(id);
 
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   async function handleSubmit() {
     await submit();
     router.push('/stores');
@@ -33,7 +37,11 @@ export function StoreEditPageView({ id }: Props) {
 
   return (
     <MobileListPageLayout>
-      <DetailHeader onEditClick={() => {}} onDeleteClick={() => {}} />
+      <DetailHeader
+        onEditClick={() => {}}
+        onDeleteClick={() => {}}
+        onMenuClick={() => setIsMenuOpen(true)}
+      />
 
       <StoreForm
         values={values}
@@ -43,6 +51,11 @@ export function StoreEditPageView({ id }: Props) {
         onChange={updateValue}
         onSubmit={handleSubmit}
         onCancel={() => router.push('/stores')}
+      />
+
+      <SideMenu
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
       />
     </MobileListPageLayout>
   );

@@ -4,7 +4,9 @@ import { useRouter } from 'next/navigation';
 import { DetailHeader } from '@/components/organisms/DetailHeader/DetailHeader';
 import { BusinessCardForm } from '@/components/organisms/BusinessCardForm/BusinessCardForm';
 import { MobileListPageLayout } from '@/components/templates/MobileListPageLayout/MobileListPageLayout';
+import { SideMenu } from '@/components/organisms/SideMenu/SideMenu';
 import { useCardForm } from '@/features/cards/hooks/useCardForm';
+import { useState } from 'react';
 
 type Props = {
   id: string;
@@ -26,6 +28,8 @@ export function CardEditPageView({ id }: Props) {
     submit,
   } = useCardForm(id);
 
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   async function handleSubmit() {
     await submit();
     router.push(`/cards/${id}`);
@@ -40,6 +44,7 @@ export function CardEditPageView({ id }: Props) {
       <DetailHeader
         onEditClick={() => {}}
         onDeleteClick={() => {}}
+        onMenuClick={() => setIsMenuOpen(true)}
       />
 
       <BusinessCardForm
@@ -54,6 +59,10 @@ export function CardEditPageView({ id }: Props) {
         onToggleArrayValue={toggleArrayValue}
         onSubmit={handleSubmit}
         onCancel={() => router.push(`/cards/${id}`)}
+      />
+      <SideMenu
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
       />
     </MobileListPageLayout>
   );

@@ -4,7 +4,9 @@ import { useRouter } from 'next/navigation';
 import { DetailHeader } from '@/components/organisms/DetailHeader/DetailHeader';
 import { TagForm } from '@/components/organisms/TagForm/TagForm';
 import { MobileListPageLayout } from '@/components/templates/MobileListPageLayout/MobileListPageLayout';
+import { SideMenu } from '@/components/organisms/SideMenu/SideMenu';
 import { useTagForm } from '@/features/tags/hooks/useTagForm';
+import { useState } from 'react';
 
 export function TagCreatePageView() {
   const router = useRouter();
@@ -18,6 +20,8 @@ export function TagCreatePageView() {
     submit,
   } = useTagForm();
 
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   async function handleSubmit() {
     await submit();
     router.push('/tags');
@@ -29,7 +33,11 @@ export function TagCreatePageView() {
 
   return (
     <MobileListPageLayout>
-      <DetailHeader onEditClick={() => {}} onDeleteClick={() => {}} />
+      <DetailHeader
+        onEditClick={() => {}}
+        onDeleteClick={() => {}}
+        onMenuClick={() => setIsMenuOpen(true)}
+      />
 
       <TagForm
         values={values}
@@ -39,6 +47,11 @@ export function TagCreatePageView() {
         onChange={updateValue}
         onSubmit={handleSubmit}
         onCancel={() => router.push('/tags')}
+      />
+      
+      <SideMenu
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
       />
     </MobileListPageLayout>
   );
