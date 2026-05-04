@@ -1,0 +1,43 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 0 clamp(14px, 4vw, 20px) 32px;
+}
+
+.input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #111827;
+  font-size: 16px;
+}
+
+.switchRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #111827;
+  font-size: 15px;
+}
+
+.helper {
+  margin: 6px 0 0;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.error {
+  margin: 0;
+  color: #dc2626;
+  font-size: 14px;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
