@@ -1,12 +1,13 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { DetailHeader } from '@/components/organisms/DetailHeader/DetailHeader';
+import { FormHeader } from '@/components/organisms/FormHeader/FormHeader';
 import { UserForm } from '@/components/organisms/UserForm/UserForm';
 import { MobileListPageLayout } from '@/components/templates/MobileListPageLayout/MobileListPageLayout';
 import { SideMenu } from '@/components/organisms/SideMenu/SideMenu';
 import { useUserForm } from '@/features/users/hooks/useUserForm';
 import { useState } from 'react';
+import { useToast } from '@/components/organisms/ToastProvider/ToastProvider';
 
 type Props = {
   id: string;
@@ -14,7 +15,7 @@ type Props = {
 
 export function UserEditPageView({ id }: Props) {
   const router = useRouter();
-
+  const { showToast } = useToast();
   const {
     values,
     isEditMode,
@@ -28,8 +29,13 @@ export function UserEditPageView({ id }: Props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   async function handleSubmit() {
-    await submit();
-    router.push('/users');
+    try {
+      await submit();
+      showToast('ユーザーを更新しました', 'success');
+      router.push('/users');
+    } catch {
+      showToast('ユーザーの更新に失敗しました', 'error');
+    }
   }
 
   if (isLoading) {
@@ -38,9 +44,9 @@ export function UserEditPageView({ id }: Props) {
 
   return (
     <MobileListPageLayout>
-      <DetailHeader
-        onEditClick={() => {}}
-        onDeleteClick={() => {}}
+      <FormHeader
+        onSubmitClick={handleSubmit}
+        onCancelClick={() => router.push('/users')}
         onMenuClick={() => setIsMenuOpen(true)}
       />
 

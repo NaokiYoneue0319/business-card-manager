@@ -9,10 +9,12 @@ import { StoreDeleteConfirmModal } from '@/components/organisms/StoreDeleteConfi
 import { MobileListPageLayout } from '@/components/templates/MobileListPageLayout/MobileListPageLayout';
 import { useStores } from '@/features/stores/hooks/useStores';
 import type { StoreOption } from '@/features/stores/api/storesApi';
+import { useToast } from '@/components/organisms/ToastProvider/ToastProvider';
 
 export function StoreListPageView() {
   const router = useRouter();
   const { stores, isLoading, errorMessage, removeStore } = useStores();
+  const { showToast } = useToast();
 
   const [deleteTarget, setDeleteTarget] = useState<StoreOption | null>(null);
 
@@ -21,8 +23,13 @@ export function StoreListPageView() {
   async function handleDelete() {
     if (!deleteTarget) return;
 
-    await removeStore(deleteTarget.id);
-    setDeleteTarget(null);
+    try {
+      await removeStore(deleteTarget.id);
+      showToast('店舗を削除しました', 'success');
+      setDeleteTarget(null);
+    } catch {
+      showToast('店舗の削除に失敗しました', 'error');
+    }
   }
 
   return (

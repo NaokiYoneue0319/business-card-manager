@@ -10,6 +10,7 @@ import { DeleteConfirmModal } from '@/components/organisms/DeleteConfirmModal/De
 import { MobileListPageLayout } from '@/components/templates/MobileListPageLayout/MobileListPageLayout';
 import { SideMenu } from '@/components/organisms/SideMenu/SideMenu';
 import { useCardDetail } from '@/features/cards/hooks/useCardDetail';
+import { useToast } from '@/components/organisms/ToastProvider/ToastProvider';
 
 type Props = {
   id: string;
@@ -18,12 +19,19 @@ type Props = {
 export function CardDetailPageView({ id }: Props) {
   const router = useRouter();
   const { card, isLoading, errorMessage, removeCard } = useCardDetail(id);
+  const { showToast } = useToast();
+  
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   async function handleDelete() {
-    await removeCard();
-    router.push('/cards');
+    try {
+      await removeCard();
+      showToast('名刺を削除しました', 'success');
+      router.push('/cards');
+    } catch {
+      showToast('名刺の削除に失敗しました', 'error');
+    }
   }
 
   if (isLoading) {

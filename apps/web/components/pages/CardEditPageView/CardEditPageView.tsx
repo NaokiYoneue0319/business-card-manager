@@ -1,12 +1,13 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { DetailHeader } from '@/components/organisms/DetailHeader/DetailHeader';
+import { FormHeader } from '@/components/organisms/FormHeader/FormHeader';
 import { BusinessCardForm } from '@/components/organisms/BusinessCardForm/BusinessCardForm';
 import { MobileListPageLayout } from '@/components/templates/MobileListPageLayout/MobileListPageLayout';
 import { SideMenu } from '@/components/organisms/SideMenu/SideMenu';
 import { useCardForm } from '@/features/cards/hooks/useCardForm';
 import { useState } from 'react';
+import { useToast } from '@/components/organisms/ToastProvider/ToastProvider';
 
 type Props = {
   id: string;
@@ -14,6 +15,7 @@ type Props = {
 
 export function CardEditPageView({ id }: Props) {
   const router = useRouter();
+  const { showToast } = useToast();
 
   const {
     values,
@@ -31,8 +33,13 @@ export function CardEditPageView({ id }: Props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   async function handleSubmit() {
-    await submit();
-    router.push(`/cards/${id}`);
+    try{
+      showToast('名刺を更新しました', 'success');
+      await submit();
+      router.push(`/cards/${id}`);
+    } catch {
+      showToast('名刺の更新に失敗しました', 'error');
+    }
   }
 
   if (isLoading) {
@@ -41,9 +48,9 @@ export function CardEditPageView({ id }: Props) {
 
   return (
     <MobileListPageLayout>
-      <DetailHeader
-        onEditClick={() => {}}
-        onDeleteClick={() => {}}
+      <FormHeader
+        onSubmitClick={handleSubmit}
+        onCancelClick={() => router.push(`/cards/${id}`)}
         onMenuClick={() => setIsMenuOpen(true)}
       />
 

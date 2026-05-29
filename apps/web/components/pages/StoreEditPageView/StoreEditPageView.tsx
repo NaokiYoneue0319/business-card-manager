@@ -1,12 +1,13 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { DetailHeader } from '@/components/organisms/DetailHeader/DetailHeader';
+import { FormHeader } from '@/components/organisms/FormHeader/FormHeader';
 import { StoreForm } from '@/components/organisms/StoreForm/StoreForm';
 import { MobileListPageLayout } from '@/components/templates/MobileListPageLayout/MobileListPageLayout';
 import { SideMenu } from '@/components/organisms/SideMenu/SideMenu';
 import { useStoreForm } from '@/features/stores/hooks/useStoreForm';
 import { useState } from 'react';
+import { useToast } from '@/components/organisms/ToastProvider/ToastProvider';
 
 type Props = {
   id: string;
@@ -14,7 +15,7 @@ type Props = {
 
 export function StoreEditPageView({ id }: Props) {
   const router = useRouter();
-
+  const { showToast } = useToast();
   const {
     values,
     isLoading,
@@ -27,8 +28,13 @@ export function StoreEditPageView({ id }: Props) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   async function handleSubmit() {
-    await submit();
-    router.push('/stores');
+    try {
+      await submit();
+      showToast('店舗を更新しました', 'success');
+      router.push('/stores');
+    } catch {
+      showToast('店舗の更新に失敗しました', 'error');
+    }
   }
 
   if (isLoading) {
@@ -37,9 +43,9 @@ export function StoreEditPageView({ id }: Props) {
 
   return (
     <MobileListPageLayout>
-      <DetailHeader
-        onEditClick={() => {}}
-        onDeleteClick={() => {}}
+      <FormHeader
+        onSubmitClick={handleSubmit}
+        onCancelClick={() => router.push('/stores')}
         onMenuClick={() => setIsMenuOpen(true)}
       />
 

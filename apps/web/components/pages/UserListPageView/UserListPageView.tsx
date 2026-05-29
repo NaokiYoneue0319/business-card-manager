@@ -9,20 +9,26 @@ import { UserDeleteConfirmModal } from '@/components/organisms/UserDeleteConfirm
 import { MobileListPageLayout } from '@/components/templates/MobileListPageLayout/MobileListPageLayout';
 import { useUsers } from '@/features/users/hooks/useUsers';
 import type { UserOption } from '@/features/users/api/usersApi';
+import { useToast } from '@/components/organisms/ToastProvider/ToastProvider';
 
 export function UserListPageView() {
   const router = useRouter();
   const { users, isLoading, errorMessage, removeUser } = useUsers();
-
   const [deleteTarget, setDeleteTarget] = useState<UserOption | null>(null);
+  const { showToast } = useToast();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   async function handleDelete() {
     if (!deleteTarget) return;
 
-    await removeUser(deleteTarget.id);
-    setDeleteTarget(null);
+    try {
+      await removeUser(deleteTarget.id);
+      showToast('ユーザーを削除しました', 'success');
+      setDeleteTarget(null);
+    } catch {
+      showToast('ユーザーの削除に失敗しました', 'error');
+    }
   }
 
   return (

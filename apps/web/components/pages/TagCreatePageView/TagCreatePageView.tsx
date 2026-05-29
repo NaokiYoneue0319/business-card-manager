@@ -1,16 +1,17 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { DetailHeader } from '@/components/organisms/DetailHeader/DetailHeader';
+import { FormHeader } from '@/components/organisms/FormHeader/FormHeader';
 import { TagForm } from '@/components/organisms/TagForm/TagForm';
 import { MobileListPageLayout } from '@/components/templates/MobileListPageLayout/MobileListPageLayout';
 import { SideMenu } from '@/components/organisms/SideMenu/SideMenu';
 import { useTagForm } from '@/features/tags/hooks/useTagForm';
 import { useState } from 'react';
+import { useToast } from '@/components/organisms/ToastProvider/ToastProvider';
 
 export function TagCreatePageView() {
   const router = useRouter();
-
+  const { showToast } = useToast();
   const {
     values,
     isLoading,
@@ -23,8 +24,13 @@ export function TagCreatePageView() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   async function handleSubmit() {
-    await submit();
-    router.push('/tags');
+    try {
+      await submit();
+      showToast('タグを登録しました', 'success');
+      router.push('/tags');
+    } catch {
+      showToast('タグの登録に失敗しました', 'error');
+    }
   }
 
   if (isLoading) {
@@ -33,9 +39,9 @@ export function TagCreatePageView() {
 
   return (
     <MobileListPageLayout>
-      <DetailHeader
-        onEditClick={() => {}}
-        onDeleteClick={() => {}}
+      <FormHeader
+        onSubmitClick={handleSubmit}
+        onCancelClick={() => router.push('/tags')}
         onMenuClick={() => setIsMenuOpen(true)}
       />
 

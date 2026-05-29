@@ -2,7 +2,6 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { ROUTES } from '@/constants/routes';
 import { AppHeader } from '@/components/organisms/AppHeader/AppHeader';
 import { BusinessCardList } from '@/components/organisms/BusinessCardList/BusinessCardList';
 import { DeleteConfirmModal } from '@/components/organisms/DeleteConfirmModal/DeleteConfirmModal';
@@ -11,10 +10,12 @@ import { SideMenu } from '@/components/organisms/SideMenu/SideMenu';
 import { MobileListPageLayout } from '@/components/templates/MobileListPageLayout/MobileListPageLayout';
 import { useCards } from '@/features/cards/hooks/useCards';
 import type { CardListItem } from '@/features/cards/types/cardTypes';
+import { useToast } from '@/components/organisms/ToastProvider/ToastProvider';
 
 export function CardListPageView() {
   const router = useRouter();
   const { cards, isLoading, errorMessage, search, removeCard } = useCards();
+  const { showToast } = useToast();
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<CardListItem | null>(null);
@@ -23,8 +24,13 @@ export function CardListPageView() {
   async function handleDelete() {
     if (!deleteTarget) return;
 
-    await removeCard(deleteTarget.id);
-    setDeleteTarget(null);
+    try {
+      await removeCard(deleteTarget.id);
+      showToast('名刺を削除しました', 'success');
+      setDeleteTarget(null);
+    } catch {
+      showToast('名刺の削除に失敗しました', 'error');
+    }
   }
 
   return (

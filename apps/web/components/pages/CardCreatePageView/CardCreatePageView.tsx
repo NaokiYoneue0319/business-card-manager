@@ -2,34 +2,38 @@
 
 import { useRouter } from 'next/navigation';
 import { FormHeader } from '@/components/organisms/FormHeader/FormHeader';
-import { StoreForm } from '@/components/organisms/StoreForm/StoreForm';
-import { MobileListPageLayout } from '@/components/templates/MobileListPageLayout/MobileListPageLayout';
 import { SideMenu } from '@/components/organisms/SideMenu/SideMenu';
-import { useStoreForm } from '@/features/stores/hooks/useStoreForm';
-import { useState } from 'react';
+import { BusinessCardForm } from '@/components/organisms/BusinessCardForm/BusinessCardForm';
+import { MobileListPageLayout } from '@/components/templates/MobileListPageLayout/MobileListPageLayout';
+import { useCardForm } from '@/features/cards/hooks/useCardForm';
 import { useToast } from '@/components/organisms/ToastProvider/ToastProvider';
+import { useState } from 'react';
 
-export function StoreCreatePageView() {
+export function CardCreatePageView() {
   const router = useRouter();
   const { showToast } = useToast();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   const {
     values,
+    stores,
+    tags,
+    users,
     isLoading,
     isSubmitting,
     errorMessage,
     updateValue,
+    toggleArrayValue,
     submit,
-  } = useStoreForm();
-
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  } = useCardForm();
 
   async function handleSubmit() {
     try {
-      await submit();
-      showToast('店舗を登録しました', 'success');
-      router.push('/stores');
+        await submit();
+        showToast('名刺を登録しました', 'success');
+        router.push('/cards');
     } catch {
-      showToast('店舗の登録に失敗しました', 'error');
+        showToast('名刺の登録に失敗しました', 'error');
     }
   }
 
@@ -41,18 +45,22 @@ export function StoreCreatePageView() {
     <MobileListPageLayout>
       <FormHeader
         onSubmitClick={handleSubmit}
-        onCancelClick={() => router.push('/stores')}
+        onCancelClick={() => router.push('/cards')}
         onMenuClick={() => setIsMenuOpen(true)}
       />
 
-      <StoreForm
+      <BusinessCardForm
         values={values}
+        stores={stores}
+        tags={tags}
+        users={users}
         isSubmitting={isSubmitting}
         errorMessage={errorMessage}
         submitLabel="登録"
         onChange={updateValue}
+        onToggleArrayValue={toggleArrayValue}
         onSubmit={handleSubmit}
-        onCancel={() => router.push('/stores')}
+        onCancel={() => router.push('/cards')}
       />
 
       <SideMenu

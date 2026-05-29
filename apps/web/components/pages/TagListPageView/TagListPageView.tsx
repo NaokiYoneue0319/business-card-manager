@@ -9,20 +9,26 @@ import { TagDeleteConfirmModal } from '@/components/organisms/TagDeleteConfirmMo
 import { MobileListPageLayout } from '@/components/templates/MobileListPageLayout/MobileListPageLayout';
 import { useTags } from '@/features/tags/hooks/useTags';
 import type { TagOption } from '@/features/tags/api/tagsApi';
+import { useToast } from '@/components/organisms/ToastProvider/ToastProvider';
 
 export function TagListPageView() {
   const router = useRouter();
   const { tags, isLoading, errorMessage, removeTag } = useTags();
-
   const [deleteTarget, setDeleteTarget] = useState<TagOption | null>(null);
+  const { showToast } = useToast();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   async function handleDelete() {
     if (!deleteTarget) return;
 
-    await removeTag(deleteTarget.id);
-    setDeleteTarget(null);
+    try {
+      await removeTag(deleteTarget.id);
+      showToast('タグを削除しました', 'success');
+      setDeleteTarget(null);
+    } catch {
+      showToast('タグの削除に失敗しました', 'error');
+    }
   }
 
   return (

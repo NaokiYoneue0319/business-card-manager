@@ -1,3 +1,4 @@
+import { Caveat } from 'next/font/google';
 import { TEXTS } from '../../../constants/texts';
 import { IconButton } from '@/components/atoms/IconButton/IconButton';
 import styles from './DetailHeader.module.css';
@@ -8,10 +9,15 @@ type Props = {
   onMenuClick?: () => void;
 };
 
+const caveat = Caveat({
+  subsets: ['latin'],
+  weight: ['700'],
+});
+
 export function DetailHeader({ onEditClick, onDeleteClick, onMenuClick }: Props) {
   return (
     <header className={styles.header}>
-      <h1 className={styles.title}>{TEXTS.SYSTEMNAME}</h1>
+      <h1 className={`${styles.title} ${caveat.className}`}>{TEXTS.SYSTEMNAME}</h1>
 
       <div className={styles.actions}>
         <IconButton label="編集" onClick={onEditClick}>✎</IconButton>
