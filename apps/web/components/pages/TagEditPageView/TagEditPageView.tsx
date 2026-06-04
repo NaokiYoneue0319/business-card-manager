@@ -8,6 +8,7 @@ import { SideMenu } from '@/components/organisms/SideMenu/SideMenu';
 import { useTagForm } from '@/features/tags/hooks/useTagForm';
 import { useState } from 'react';
 import { useToast } from '@/components/organisms/ToastProvider/ToastProvider';
+import { LoadingSpinner } from '@/components/atoms/LoadingSpinner/LoadingSpinner';
 
 type Props = {
   id: string;
@@ -38,7 +39,11 @@ export function TagEditPageView({ id }: Props) {
   }
 
   if (isLoading) {
-    return <MobileListPageLayout>読み込み中...</MobileListPageLayout>;
+    return (
+      <MobileListPageLayout>
+        <LoadingSpinner />
+      </MobileListPageLayout>
+    );
   }
 
   return (

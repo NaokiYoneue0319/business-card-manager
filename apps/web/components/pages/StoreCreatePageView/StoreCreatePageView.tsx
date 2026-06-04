@@ -8,6 +8,7 @@ import { SideMenu } from '@/components/organisms/SideMenu/SideMenu';
 import { useStoreForm } from '@/features/stores/hooks/useStoreForm';
 import { useState } from 'react';
 import { useToast } from '@/components/organisms/ToastProvider/ToastProvider';
+import { LoadingSpinner } from '@/components/atoms/LoadingSpinner/LoadingSpinner';
 
 export function StoreCreatePageView() {
   const router = useRouter();
@@ -34,7 +35,11 @@ export function StoreCreatePageView() {
   }
 
   if (isLoading) {
-    return <MobileListPageLayout>読み込み中...</MobileListPageLayout>;
+    return (
+      <MobileListPageLayout>
+        <LoadingSpinner />
+      </MobileListPageLayout>
+    );
   }
 
   return (

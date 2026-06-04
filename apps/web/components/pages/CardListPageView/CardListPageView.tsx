@@ -11,6 +11,8 @@ import { MobileListPageLayout } from '@/components/templates/MobileListPageLayou
 import { useCards } from '@/features/cards/hooks/useCards';
 import type { CardListItem } from '@/features/cards/types/cardTypes';
 import { useToast } from '@/components/organisms/ToastProvider/ToastProvider';
+import { LoadingSpinner } from '@/components/atoms/LoadingSpinner/LoadingSpinner';
+import { EmptyState } from '@/components/atoms/EmptyState/EmptyState';
 
 export function CardListPageView() {
   const router = useRouter();
@@ -41,7 +43,13 @@ export function CardListPageView() {
         onMenuClick={() => setIsMenuOpen(true)}
       />
 
-      {isLoading ? <p>読み込み中...</p> : null}
+      {isLoading ? (
+        <LoadingSpinner />
+      ) : cards.length === 0 ? (
+        <EmptyState message="名刺がありません" />
+      ) : (
+        <BusinessCardList cards={cards} onDeleteClick={setDeleteTarget} />
+      )}
       {errorMessage ? <p>{errorMessage}</p> : null}
 
       <BusinessCardList cards={cards} onDeleteClick={setDeleteTarget} />

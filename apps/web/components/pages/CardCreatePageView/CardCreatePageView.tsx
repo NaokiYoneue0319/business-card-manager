@@ -8,6 +8,8 @@ import { MobileListPageLayout } from '@/components/templates/MobileListPageLayou
 import { useCardForm } from '@/features/cards/hooks/useCardForm';
 import { useToast } from '@/components/organisms/ToastProvider/ToastProvider';
 import { useState } from 'react';
+import { LoadingSpinner } from '@/components/atoms/LoadingSpinner/LoadingSpinner';
+
 
 export function CardCreatePageView() {
   const router = useRouter();
@@ -38,7 +40,11 @@ export function CardCreatePageView() {
   }
 
   if (isLoading) {
-    return <MobileListPageLayout>読み込み中...</MobileListPageLayout>;
+    return (
+      <MobileListPageLayout>
+        <LoadingSpinner />
+      </MobileListPageLayout>
+    );
   }
 
   return (

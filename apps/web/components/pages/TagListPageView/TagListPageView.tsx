@@ -10,6 +10,8 @@ import { MobileListPageLayout } from '@/components/templates/MobileListPageLayou
 import { useTags } from '@/features/tags/hooks/useTags';
 import type { TagOption } from '@/features/tags/api/tagsApi';
 import { useToast } from '@/components/organisms/ToastProvider/ToastProvider';
+import { LoadingSpinner } from '@/components/atoms/LoadingSpinner/LoadingSpinner';
+import { EmptyState } from '@/components/atoms/EmptyState/EmptyState';
 
 export function TagListPageView() {
   const router = useRouter();
@@ -39,7 +41,13 @@ export function TagListPageView() {
         onMenuClick={() => setIsMenuOpen(true)}
       />
 
-      {isLoading ? <p>読み込み中...</p> : null}
+      {isLoading ? (
+        <LoadingSpinner />
+      ) : tags.length === 0 ? (
+        <EmptyState message="タグがありません" />
+      ) : (
+        <TagList tags={tags} onDeleteClick={setDeleteTarget} />
+      )}
       {errorMessage ? <p>{errorMessage}</p> : null}
 
       <TagList tags={tags} onDeleteClick={setDeleteTarget} />

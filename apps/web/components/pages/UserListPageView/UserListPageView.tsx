@@ -10,6 +10,8 @@ import { MobileListPageLayout } from '@/components/templates/MobileListPageLayou
 import { useUsers } from '@/features/users/hooks/useUsers';
 import type { UserOption } from '@/features/users/api/usersApi';
 import { useToast } from '@/components/organisms/ToastProvider/ToastProvider';
+import { LoadingSpinner } from '@/components/atoms/LoadingSpinner/LoadingSpinner';
+import { EmptyState } from '@/components/atoms/EmptyState/EmptyState';
 
 export function UserListPageView() {
   const router = useRouter();
@@ -39,7 +41,13 @@ export function UserListPageView() {
         onMenuClick={() => setIsMenuOpen(true)}
       />
 
-      {isLoading ? <p>読み込み中...</p> : null}
+      {isLoading ? (
+        <LoadingSpinner />
+      ) : users.length === 0 ? (
+        <EmptyState message="ユーザーが存在しません" />
+      ) : (
+        <UserList users={users} onDeleteClick={setDeleteTarget} />
+      )}
       {errorMessage ? <p>{errorMessage}</p> : null}
 
       <UserList users={users} onDeleteClick={setDeleteTarget} />

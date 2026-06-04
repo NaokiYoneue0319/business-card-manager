@@ -10,6 +10,8 @@ import { MobileListPageLayout } from '@/components/templates/MobileListPageLayou
 import { useStores } from '@/features/stores/hooks/useStores';
 import type { StoreOption } from '@/features/stores/api/storesApi';
 import { useToast } from '@/components/organisms/ToastProvider/ToastProvider';
+import { LoadingSpinner } from '@/components/atoms/LoadingSpinner/LoadingSpinner';
+import { EmptyState } from '@/components/atoms/EmptyState/EmptyState';
 
 export function StoreListPageView() {
   const router = useRouter();
@@ -40,7 +42,13 @@ export function StoreListPageView() {
         onMenuClick={() => setIsMenuOpen(true)}
       />
 
-      {isLoading ? <p>読み込み中...</p> : null}
+      {isLoading ? (
+        <LoadingSpinner />
+      ) : stores.length === 0 ? (
+        <EmptyState message="店舗がありません" />
+      ) : (
+        <StoreList stores={stores} onDeleteClick={setDeleteTarget} />
+      )}
       {errorMessage ? <p>{errorMessage}</p> : null}
 
       <StoreList stores={stores} onDeleteClick={setDeleteTarget} />
