@@ -8,6 +8,7 @@ import { TagsModule } from './tags/tags.module';
 import { UsersModule } from './users/users.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { UploadsModule } from './uploads/cards/uploads.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { AppService } from './app.service';
     StoresModule,
     TagsModule,
     UsersModule,
+    UploadsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
