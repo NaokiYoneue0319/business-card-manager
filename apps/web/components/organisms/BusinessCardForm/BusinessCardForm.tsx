@@ -10,6 +10,7 @@ import type { StoreOption } from '@/features/stores/api/storesApi';
 import type { TagOption } from '@/features/tags/api/tagsApi';
 import type { UserOption } from '@/features/users/api/usersApi';
 import styles from './BusinessCardForm.module.css';
+import { ImageUploadField } from '@/components/molecules/ImageUploadField/ImageUploadField';
 
 type Props = {
   values: CardFormValues;
@@ -75,21 +76,17 @@ export function BusinessCardForm({
         />
       </FormField>
 
-      <FormField label="名刺画像（表）URL">
-        <TextInput
-          value={values.frontImageUrl}
-          placeholder="/images/front.png"
-          onChange={(value) => onChange('frontImageUrl', value)}
-        />
-      </FormField>
+      <ImageUploadField
+        label="名刺画像（表）"
+        imageUrl={values.frontImageUrl}
+        onUploaded={(imageUrl) => onChange('frontImageUrl', imageUrl)}
+      />
 
-      <FormField label="名刺画像（裏）URL">
-        <TextInput
-          value={values.backImageUrl}
-          placeholder="/images/back.png"
-          onChange={(value) => onChange('backImageUrl', value)}
-        />
-      </FormField>
+      <ImageUploadField
+        label="名刺画像（裏）"
+        imageUrl={values.backImageUrl}
+        onUploaded={(imageUrl) => onChange('backImageUrl', imageUrl)}
+      />
 
       <FormField label="商談内容">
         <textarea

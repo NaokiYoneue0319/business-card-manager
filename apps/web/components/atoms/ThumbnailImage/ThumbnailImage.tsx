@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '@/lib/env';
 import styles from './ThumbnailImage.module.css';
 
 type Props = {
@@ -6,7 +7,17 @@ type Props = {
   onClick?: () => void;
 };
 
+function resolveImageUrl(src?: string) {
+  if (!src) return '';
+
+  if (src.startsWith('http')) return src;
+
+  return `${API_BASE_URL}${src}`;
+}
+
 export function ThumbnailImage({ src, alt, onClick }: Props) {
+  const imageUrl = resolveImageUrl(src);
+
   return (
     <button
       type="button"
@@ -16,8 +27,8 @@ export function ThumbnailImage({ src, alt, onClick }: Props) {
         onClick?.();
       }}
     >
-      {src ? (
-        <img src={src} alt={alt} className={styles.image} />
+      {imageUrl ? (
+        <img src={imageUrl} alt={alt} className={styles.image} />
       ) : (
         <div className={styles.placeholder}>🖼️</div>
       )}
