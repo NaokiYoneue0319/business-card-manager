@@ -134,6 +134,11 @@ export function useCardForm(id?: string) {
       return;
     }
 
+    if (!values.frontImageUrl) {
+      setErrorMessage('名刺画像（表）をアップロードしてください');
+      return;
+    }
+
     try {
       setIsSubmitting(true);
       setErrorMessage('');
