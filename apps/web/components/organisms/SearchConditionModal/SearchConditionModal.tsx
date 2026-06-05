@@ -79,7 +79,7 @@ export function SearchConditionModal({ isOpen, onClose, onSearch }: Props) {
 
   return (
     <div className={styles.overlay}>
-      <section className={styles.modal}>
+      <section className={styles.modal} aria-label="検索条件モーダル">
         <div className={styles.header}>
           <p className={styles.title}>検索条件</p>
           <button type="button" className={styles.closeButton} onClick={onClose}>

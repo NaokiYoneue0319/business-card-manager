@@ -54,6 +54,7 @@ export function BusinessCardForm({
 
       <FormField label="店舗">
         <select
+          aria-label="店舗"
           className={styles.input}
           value={values.storeId}
           onChange={(event) => onChange('storeId', event.target.value)}
@@ -90,6 +91,7 @@ export function BusinessCardForm({
 
       <FormField label="商談内容">
         <textarea
+          aria-label="商談内容"
           className={styles.textarea}
           value={values.businessDetail}
           onChange={(event) => onChange('businessDetail', event.target.value)}
@@ -98,6 +100,7 @@ export function BusinessCardForm({
 
       <FormField label="メモ">
         <textarea
+          aria-label="メモ"
           className={styles.textarea}
           value={values.memo}
           onChange={(event) => onChange('memo', event.target.value)}

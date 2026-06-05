@@ -56,6 +56,7 @@ export function ImageUploadField({ label, imageUrl, onUploaded }: Props) {
       <label className={styles.uploadButton}>
         {isUploading ? 'アップロード中...' : imageUrl ? '画像を再選択' : '画像を選択'}
         <input
+          aria-label={`${label}を選択`}
           ref={inputRef}
           type="file"
           accept="image/*"
